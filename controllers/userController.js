@@ -65,6 +65,40 @@ const saveRandomUser = (req, res) => {
 };
 
 
+// updated Random User
+const updateRandomUser = (req, res) => {
+  try {
+    const { id } = req.params;
+    const { gender, name, contact, address, photoUrl } = req.body;
+    const content = JSON.parse(fs.readFileSync("config.json", "utf8"));
+    const Result = content.find((data) => data.id == id);
+    if (!Result) {
+      res.status(404).json({
+        message: `This User  ( ${id}▫ ) Id Not Found! Make Sure Send Valid User id`,
+      });
+      return;
+    }
+    let updatedArray = [];
+    content.map((c) => {
+      if (c.id == Number(id)) {
+        c.gender = gender ? gender : c.gender;
+        c.name = name ? name : c.name;
+        c.contact = contact ? contact : c.contact;
+        c.address = address ? address : c.address;
+        c.photoUrl = photoUrl ? photoUrl : c.photoUrl;
+      }
+      updatedArray.push(c);
+      fs.writeFileSync("config.json", JSON.stringify(updatedArray));
+    });
+    res.status(200).json({
+      message: "Updated Successfully Completed Random Single User ",
+    });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
+
 // Export All Controllers  Function
 module.exports = {
   getRandomUser,
