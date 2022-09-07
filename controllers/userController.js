@@ -126,6 +126,26 @@ const updateMultipleUser = (req, res) => {
   }
 };
 
+// Delete single User
+const deleteUser = (req, res) => {
+  try {
+    const { id } = req.params;
+    const content = JSON.parse(fs.readFileSync("config.json", "utf8"));
+    const Result = content.find((data) => data.id == id);
+    if (!Result) {
+      res.status(404).json({
+        message: `This User  ( ${id}▫ ) Id Not Found! Make Sure Send Valid User id`,
+      });
+      return;
+    }
+    const filteredUser = content.filter((u) => u.id !== Number(id));
+    fs.writeFileSync("config.json", JSON.stringify(filteredUser));
+    res.status(200).json({ message: " Delete user Successfully! " });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
 // Export All Controllers  Function
 module.exports = {
   getRandomUser,
