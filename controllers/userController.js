@@ -99,6 +99,33 @@ const updateRandomUser = (req, res) => {
 };
 
 
+// Multiple Random usersUpdated
+const updateMultipleUser = (req, res) => {
+  try {
+    const arrayMultipleUsers = req.body;
+    arrayMultipleUsers.map((mu) => {
+      const content = JSON.parse(fs.readFileSync("config.json", "utf8"));
+      let updatedArray = [];
+      content.map((c) => {
+        if (c.id == mu.id) {
+          c.gender = mu.gender ? mu.gender : c.gender;
+          c.name = mu.name ? mu.name : c.name;
+          c.contact = mu.contact ? mu.contact : c.contact;
+          c.address = mu.address ? mu.address : c.address;
+          c.photoUrl = mu.photoUrl ? mu.photoUrl : c.photoUrl;
+        }
+        updatedArray.push(c);
+        fs.writeFileSync("config.json", JSON.stringify(updatedArray));
+      });
+    });
+    res
+      .status(200)
+      .json({ message: " Update Multiple User Successfully Completed " });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
 // Export All Controllers  Function
 module.exports = {
   getRandomUser,
